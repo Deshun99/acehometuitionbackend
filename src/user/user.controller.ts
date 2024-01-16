@@ -58,6 +58,24 @@ export class UserController {
     }
   }
 
+  @Get('/search')
+  async findOneUserByUserId(
+    @Query('userId') userId: string,
+    @Query('role') role: string,
+  ) {
+    try {
+      const result = await this.userService.findByUserId(userId, role);
+      console.log(result);
+      return result;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+      } else {
+        throw new InternalServerErrorException('Internal server error');
+      }
+    }
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);

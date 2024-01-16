@@ -166,6 +166,36 @@ export class UserService {
     }
   }
 
+  async findByUserId(userId: string, role: string) {
+    try {
+      let roleEnum;
+      if (role === 'Tutor') {
+        roleEnum = UserRoleEnum.TUTOR;
+      } else if (role === 'Tutee') {
+        roleEnum = UserRoleEnum.TUTEE;
+      }
+
+      const retrievedUser = await this.userRepository.findOne({
+        where: { userId: userId, role: roleEnum },
+      });
+
+      if (retrievedUser) {
+        return {
+          statusCode: HttpStatus.OK,
+          message: 'User found',
+          data: retrievedUser,
+        };
+      } else {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+    } catch (error) {
+      throw new HttpException(
+        error.response || 'Failed to find user',
+        error.status || HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
   findOne(id: number) {
     return `This action returns a #${id} user`;
   }
