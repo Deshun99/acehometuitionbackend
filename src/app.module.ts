@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { entityList } from './entityList';
+import { UserModule } from './user/user.module';
 
 require('dotenv').config();
 
@@ -21,6 +22,7 @@ require('dotenv').config();
       timezone: '+08:00',
     }),
     ConfigModule.forRoot({ isGlobal: true }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
