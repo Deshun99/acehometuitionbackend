@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from 'src/auth/public.decorator';
+import { SignInDto } from './dto/sign-in.dto';
 
 @Controller('users')
 export class UserController {
@@ -12,6 +13,7 @@ export class UserController {
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     try {
+      console.log("Create User Now");
       const result = await this.userService.create(createUserDto);
       return result;
     } catch (error) {
@@ -39,14 +41,16 @@ export class UserController {
   }
 
   @Public()
-  @Get('/login')
+  @Post('/login')
   async signInWithEmailHashedPwRole(
-    @Query('email') email: string,
-    @Query('password') password: string,
-    @Query('role') role: string,
+    @Body() signInDto: SignInDto
   ) {
     try {
-      const result = await this.userService.signIn(email, password, role);
+      const result = await this.userService.signIn(
+        signInDto.email,
+        signInDto.password,
+        signInDto.role,
+      );
       console.log(result);
       return result;
     } catch (error) {
