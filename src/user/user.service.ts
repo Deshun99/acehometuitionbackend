@@ -28,17 +28,21 @@ export class UserService {
     try {
       const { email, password } = createUserDto;
 
+      console.log(createUserDto);
+
       // Check for Duplicate Details
       const existingUser = await this.userRepository.findOne({
-        where: [{ email }],
+        where: { email: email, },
       });
 
-      if (existingUser.email === email) {
+      if (existingUser) {
         throw new HttpException(
           `Email is already registered with this account`,
           HttpStatus.CONFLICT,
         );
       }
+
+      console.log('No duplicate email');
 
       // hash password for security purpose
       const hashedPassword = await bcrypt.hash(
@@ -55,7 +59,10 @@ export class UserService {
 
       const newUser = new User({
         ...createUserDto,
+        password: hashedPassword,
       });
+
+      console.log(newUser);
 
       await this.userRepository.save(newUser);
 
